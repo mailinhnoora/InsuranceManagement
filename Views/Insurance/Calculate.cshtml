@@ -1,0 +1,68 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Tính toán bảo hiểm";
+    ViewData["ActiveMenu"] = "tinhtoan";
+}
+
+<div class="page-header">
+    <h2>Tính toán bảo hiểm hàng tháng</h2>
+    <p>Tự động tính và lưu số tiền bảo hiểm cho toàn bộ nhân viên theo tháng/năm</p>
+</div>
+
+<div style="max-width:560px">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-calculator" style="color:var(--primary)"></i> &nbsp;Nhập kỳ tính</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-action="CalculateMonthlyInsurance">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label>Tháng/Năm <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="thangNam"
+                           placeholder="VD: 06/2026"
+                           pattern="^\d{2}/\d{4}$"
+                           maxlength="7"
+                           value="@DateTime.Now.ToString("MM/yyyy")"
+                           required />
+                    <span style="font-size:12px;color:var(--gray-500);margin-top:4px;display:block">Định dạng MM/YYYY. Ví dụ: 05/2026</span>
+                </div>
+                <div style="background:var(--primary-light);border-radius:9px;padding:14px 16px;margin-bottom:18px;font-size:13.5px;color:var(--primary);line-height:1.7">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Hệ thống sẽ tính toán cho <strong>toàn bộ nhân viên hiện có</strong> trong kỳ này.<br/>
+                    Mỗi tháng chỉ được tính <strong>1 lần</strong>. Không thể tính lại kỳ đã tồn tại.
+                </div>
+                <div style="display:flex;gap:10px">
+                    <button type="submit" class="btn btn-primary" style="flex:1">
+                        <i class="fa-solid fa-calculator"></i> Tính toán & Lưu kỳ đóng
+                    </button>
+                    <a href="/Insurance/AdminHistory" class="btn btn-outline">
+                        <i class="fa-solid fa-table"></i> Xem lịch sử
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-info-circle" style="color:var(--gray-500)"></i> &nbsp;Công thức tính</h3></div>
+        <div class="card-body" style="padding:0">
+            <table>
+                <thead>
+                    <tr><th>Loại BH</th><th style="text-align:right">NV đóng</th><th style="text-align:right">Công ty đóng</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="badge badge-blue">BHXH</span></td><td style="text-align:right" class="text-mono">8.0%</td><td style="text-align:right" class="text-mono">17.5%</td></tr>
+                    <tr><td><span class="badge badge-green">BHYT</span></td><td style="text-align:right" class="text-mono">1.5%</td><td style="text-align:right" class="text-mono">3.0%</td></tr>
+                    <tr><td><span class="badge badge-yellow">BHTN</span></td><td style="text-align:right" class="text-mono">1.0%</td><td style="text-align:right" class="text-mono">1.0%</td></tr>
+                    <tr><td><span class="badge badge-red">TNLĐ-BNN</span></td><td style="text-align:right" class="text-mono">0.0%</td><td style="text-align:right" class="text-mono">0.5%</td></tr>
+                    <tr style="background:var(--gray-50);font-weight:700">
+                        <td>Tổng</td>
+                        <td style="text-align:right;color:var(--danger)" class="text-mono">10.5%</td>
+                        <td style="text-align:right;color:var(--success)" class="text-mono">22.0%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

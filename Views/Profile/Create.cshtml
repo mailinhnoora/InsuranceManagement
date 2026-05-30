@@ -1,0 +1,63 @@
+@model InsuranceManagement.Models.NhanVien
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Thêm nhân viên mới";
+    ViewData["ActiveMenu"] = "nhanvien";
+}
+<div class="page-header">
+    <h2>Thêm nhân viên mới</h2>
+    <p>Tạo tài khoản và hồ sơ bảo hiểm cho nhân viên mới</p>
+</div>
+
+<div class="card" style="max-width:680px">
+    <div class="card-body">
+        <form method="post" asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div class="grid-2">
+                <div class="form-group" style="grid-column:1/-1">
+                    <label>Họ và tên <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="HoTen" placeholder="Nguyễn Văn A" required />
+                    @Html.ValidationMessage("HoTen", new { @class="text-danger" })
+                </div>
+                <div class="form-group">
+                    <label>Tên đăng nhập <span style="color:var(--danger)">*</span></label>
+                    <input type="text" name="tenDangNhap" placeholder="nhanvien_xxx" required />
+                    @Html.ValidationMessage("tenDangNhap", new { @class="text-danger" })
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu <span style="color:var(--danger)">*</span></label>
+                    <input type="password" name="matKhau" placeholder="••••••••" required />
+                    @Html.ValidationMessage("matKhau", new { @class="text-danger" })
+                </div>
+                <div class="form-group">
+                    <label>Số sổ BHXH</label>
+                    <input type="text" name="SoSoBHXH" placeholder="01 - 234567890" />
+                </div>
+                <div class="form-group">
+                    <label>Số thẻ BHYT</label>
+                    <input type="text" name="SoTheBHYT" placeholder="HS4010012345678" />
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                    <label>Nơi đăng ký KCB ban đầu</label>
+                    <input type="text" name="NoiDangKyKCB" placeholder="Bệnh viện Bạch Mai – Hà Nội" />
+                </div>
+                <div class="form-group">
+                    <label>Lương đóng bảo hiểm (VNĐ) <span style="color:var(--danger)">*</span></label>
+                    <input type="number" name="LuongDongBaoHiem" placeholder="10000000" min="0" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Mức hưởng chính sách</label>
+                <textarea name="MucHuongChinhSach" rows="2" placeholder="BHYT hưởng 80%, thai sản 6 tháng lương..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Người thụ hưởng</label>
+                <textarea name="NguoiThuHuong" rows="2" placeholder="Vợ: Nguyễn Thị B – 0912345678 – Quan hệ: vợ"></textarea>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+                <a href="/Profile/Index" class="btn btn-outline">Hủy</a>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu nhân viên</button>
+            </div>
+        </form>
+    </div>
+</div>

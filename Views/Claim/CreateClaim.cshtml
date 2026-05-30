@@ -1,0 +1,120 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Tạo yêu cầu hưởng bảo hiểm";
+    ViewData["ActiveMenu"] = "claim";
+    var danhMuc = ViewData["DanhMucLoaiCheDo"] as string[] ?? Array.Empty<string>();
+}
+
+<div class="page-header">
+    <h2>Tạo yêu cầu hưởng bảo hiểm</h2>
+    <p>Điền đầy đủ thông tin và đính kèm chứng từ để gửi yêu cầu</p>
+</div>
+
+<div style="max-width:680px">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" asp-action="CreateClaim" enctype="multipart/form-data" id="form-claim" novalidate>
+                @Html.AntiForgeryToken()
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert-error mb-4">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Vui lòng kiểm tra lại các thông tin bên dưới.
+                    </div>
+                }
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Loại chế độ <span style="color:var(--danger)">*</span></label>
+                        <select name="loaiCheDo" id="inp-loai">
+                            <option value="">-- Chọn loại chế độ --</option>
+                            @foreach (var lc in danhMuc)
+                            {
+                                <option value="@lc">@lc</option>
+                            }
+                        </select>
+                        @Html.ValidationMessage("LoaiCheDo", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <label>Số tiền yêu cầu (VNĐ) <span style="color:var(--danger)">*</span></label>
+                        <input type="number" name="soTienYeuCau" id="inp-sotien" placeholder="VD: 5000000" min="1" />
+                        @Html.ValidationMessage("SoTienYeuCau", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mô tả lý do <span style="color:var(--danger)">*</span></label>
+                    <textarea name="moTaLyDo" id="inp-mota" rows="4"
+                              placeholder="Mô tả chi tiết lý do yêu cầu hưởng chế độ, thời gian điều trị, tên bệnh viện..."
+                              style="resize:vertical"></textarea>
+                    @Html.ValidationMessage("MoTaLyDo", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <label>Chứng từ đính kèm (Ảnh JPG/PNG hoặc PDF, tối đa 10MB) <span style="color:var(--danger)">*</span></label>
+                    <div id="upload-zone" style="border:2px dashed var(--gray-300);border-radius:9px;padding:28px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;background:var(--gray-50)">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size:30px;color:var(--gray-300);margin-bottom:10px;display:block"></i>
+                        <div style="font-size:13.5px;color:var(--gray-500)">Kéo thả file vào đây hoặc</div>
+                        <label for="inp-file" style="color:var(--primary);cursor:pointer;font-weight:600;font-size:13.5px">
+                            nhấn để chọn từ máy tính
+                        </label>
+                        <input type="file" name="chungTu" id="inp-file" accept=".jpg,.jpeg,.png,.pdf" style="display:none" />
+                        <div id="file-name" style="margin-top:10px;font-size:13px;color:var(--gray-700);font-weight:500"></div>
+                    </div>
+                    @Html.ValidationMessage("ChungTu", new { @class = "text-danger" })
+                </div>
+
+                <!-- Hướng dẫn chứng từ -->
+                <div style="background:var(--warning-bg);border-radius:9px;padding:14px 16px;margin-bottom:20px;font-size:13px;color:var(--warning);line-height:1.7">
+                    <strong><i class="fa-solid fa-circle-exclamation"></i> Lưu ý về chứng từ:</strong><br/>
+                    • Ốm đau: Giấy ra viện / đơn thuốc / xét nghiệm có xác nhận bệnh viện<br/>
+                    • Thai sản: Giấy chứng sinh / hồ sơ khám thai<br/>
+                    • Tai nạn lao động: Biên bản tai nạn có xác nhận của công ty<br/>
+                    • Hưu trí / Tử tuất: Quyết định hoặc giấy tờ liên quan
+                </div>
+
+                <div style="display:flex;gap:10px;justify-content:flex-end">
+                    <a href="/Claim/MyClaims" class="btn btn-outline">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const fileInput  = document.getElementById('inp-file');
+    const fileName   = document.getElementById('file-name');
+    const uploadZone = document.getElementById('upload-zone');
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files[0]) {
+            const size = (fileInput.files[0].size / 1024 / 1024).toFixed(2);
+            fileName.innerHTML = `<i class="fa-solid fa-paperclip" style="color:var(--success)"></i> ${fileInput.files[0].name} <span style="color:var(--gray-400)">(${size} MB)</span>`;
+            uploadZone.style.borderColor = 'var(--success)';
+            uploadZone.style.background  = 'var(--success-bg)';
+        }
+    });
+
+    uploadZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        uploadZone.style.borderColor = 'var(--primary)';
+        uploadZone.style.background  = 'var(--primary-light)';
+    });
+    uploadZone.addEventListener('dragleave', () => {
+        uploadZone.style.borderColor = 'var(--gray-300)';
+        uploadZone.style.background  = 'var(--gray-50)';
+    });
+    uploadZone.addEventListener('drop', e => {
+        e.preventDefault();
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+</script>
+}

@@ -1,0 +1,222 @@
+@model InsuranceManagement.Models.YeuCauClaim
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = $"Chi tiết đơn #{Model.ClaimID}";
+    ViewData["ActiveMenu"] = "pheduyet";
+    var isChoDuyet = Model.TrangThai == InsuranceManagement.Models.TrangThaiClaimValues.ChoDuyet;
+}
+
+<div class="page-header flex justify-between items-center">
+    <div>
+        <h2>Chi tiết đơn yêu cầu #@Model.ClaimID</h2>
+        <p>@Model.NhanVien?.HoTen &nbsp;·&nbsp; @Model.LoaiCheDo &nbsp;·&nbsp; @Model.NgayYeuCau.ToString("dd/MM/yyyy HH:mm")</p>
+    </div>
+    <a href="/Claim/AdminClaims" class="btn btn-outline">
+        <i class="fa-solid fa-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="grid-2" style="margin-bottom:20px">
+    <!-- Thông tin đơn -->
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-file-lines" style="color:var(--primary)"></i> &nbsp;Thông tin yêu cầu</h3></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--gray-500);font-size:13px">Mã đơn</span>
+                <span class="text-mono" style="font-weight:700">#@Model.ClaimID</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--gray-500);font-size:13px">Loại chế độ</span>
+                <span class="badge badge-blue">@Model.LoaiCheDo</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--gray-500);font-size:13px">Ngày gửi</span>
+                <span>@Model.NgayYeuCau.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="color:var(--gray-500);font-size:13px">Số tiền yêu cầu</span>
+                <span class="text-mono" style="font-size:18px;font-weight:800;color:var(--primary)">@Model.SoTienYeuCau.ToString("N0") ₫</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="color:var(--gray-500);font-size:13px">Trạng thái</span>
+                @switch (Model.TrangThai)
+                {
+                    case InsuranceManagement.Models.TrangThaiClaimValues.ChoDuyet:
+                        <span class="badge badge-yellow"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt</span> break;
+                    case InsuranceManagement.Models.TrangThaiClaimValues.DaDuyet:
+                        <span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Đã duyệt</span> break;
+                    case InsuranceManagement.Models.TrangThaiClaimValues.TuChoi:
+                        <span class="badge badge-red"><i class="fa-solid fa-circle-xmark"></i> Từ chối</span> break;
+                    case InsuranceManagement.Models.TrangThaiClaimValues.NhanVienHuy:
+                        <span class="badge badge-gray"><i class="fa-solid fa-ban"></i> NV hủy</span> break;
+                }
+            </div>
+            @if (Model.NgayXuly.HasValue)
+            {
+                <div style="display:flex;justify-content:space-between">
+                    <span style="color:var(--gray-500);font-size:13px">Ngày xử lý</span>
+                    <span>@Model.NgayXuly.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Thông tin nhân viên -->
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-id-card" style="color:var(--primary)"></i> &nbsp;Thông tin nhân viên</h3></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--gray-100)">
+                <div style="width:48px;height:48px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex-shrink:0">
+                    @(Model.NhanVien?.HoTen[0] ?? 'N')
+                </div>
+                <div>
+                    <div style="font-size:16px;font-weight:800">@Model.NhanVien?.HoTen</div>
+                    <div style="font-size:12px;color:var(--gray-500)">NV@Model.NhanVienID.ToString("D4")</div>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--gray-500);font-size:13px">Số sổ BHXH</span>
+                <span class="text-mono">@(Model.NhanVien?.SoSoBHXH ?? "—")</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--gray-500);font-size:13px">Số thẻ BHYT</span>
+                <span class="text-mono">@(Model.NhanVien?.SoTheBHYT ?? "—")</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+                <span style="color:var(--gray-500);font-size:13px">Lương đóng BH</span>
+                <span class="text-mono" style="font-weight:700">@(Model.NhanVien?.LuongDongBaoHiem.ToString("N0") ?? "—") ₫</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mô tả lý do -->
+<div class="card mb-4">
+    <div class="card-header"><h3><i class="fa-solid fa-align-left" style="color:var(--gray-500)"></i> &nbsp;Mô tả / Lý do yêu cầu</h3></div>
+    <div class="card-body">
+        <p style="font-size:14px;line-height:1.9;color:var(--gray-700);white-space:pre-line">@Model.MoTaLyDo</p>
+    </div>
+</div>
+
+<!-- Chứng từ -->
+@if (!string.IsNullOrEmpty(Model.ChungTuDinhKem))
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-paperclip" style="color:var(--primary)"></i> &nbsp;Chứng từ đính kèm</h3>
+            <a href="/Claim/ViewDocument/@Model.ClaimID" target="_blank" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-external-link"></i> Mở file
+            </a>
+        </div>
+        <div class="card-body">
+            @{
+                var ext = System.IO.Path.GetExtension(Model.ChungTuDinhKem).ToLowerInvariant();
+            }
+            @if (ext == ".jpg" || ext == ".jpeg" || ext == ".png")
+            {
+                <img src="/Claim/ViewDocument/@Model.ClaimID"
+                     style="max-width:100%;max-height:500px;border-radius:8px;border:1px solid var(--gray-200)"
+                     alt="Chứng từ đính kèm" />
+            }
+            else
+            {
+                <div style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--gray-50);border-radius:8px">
+                    <i class="fa-solid fa-file-pdf" style="font-size:32px;color:var(--danger)"></i>
+                    <div>
+                        <div style="font-weight:600">File PDF đính kèm</div>
+                        <a href="/Claim/ViewDocument/@Model.ClaimID" target="_blank" style="color:var(--primary);font-size:13px">Nhấn để xem / tải xuống</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Lý do từ chối -->
+@if (Model.TrangThai == InsuranceManagement.Models.TrangThaiClaimValues.TuChoi && !string.IsNullOrEmpty(Model.LyDoTuChoi))
+{
+    <div style="background:var(--danger-bg);border:1px solid #fca5a5;border-radius:10px;padding:16px 20px;margin-bottom:20px">
+        <div style="font-weight:700;color:var(--danger);margin-bottom:6px"><i class="fa-solid fa-circle-xmark"></i> Lý do từ chối</div>
+        <p style="color:var(--gray-700);font-size:14px">@Model.LyDoTuChoi</p>
+    </div>
+}
+
+<!-- Nút hành động (chỉ hiện khi ChoDuyet) -->
+@if (isChoDuyet)
+{
+    <div class="card">
+        <div class="card-body" style="display:flex;gap:12px;justify-content:flex-end">
+            <button class="btn btn-danger"
+                    onclick="moTuChoi(@Model.ClaimID)">
+                <i class="fa-solid fa-xmark"></i> Từ chối đơn này
+            </button>
+            <button class="btn btn-success"
+                    onclick="moDuyet(@Model.ClaimID, '@Model.NhanVien?.HoTen', '@Model.LoaiCheDo', @Model.SoTienYeuCau)">
+                <i class="fa-solid fa-check"></i> Phê duyệt đơn này
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal phê duyệt -->
+    <div class="modal-overlay" id="modal-duyet">
+        <div class="modal" style="max-width:440px">
+            <div class="modal-title"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> Xác nhận phê duyệt</div>
+            <div style="background:var(--success-bg);border-radius:9px;padding:14px 16px;margin-bottom:16px;font-size:13.5px;line-height:1.8">
+                Nhân viên: <strong id="pd-hoten">—</strong><br/>
+                Loại chế độ: <strong id="pd-loai">—</strong><br/>
+                Số tiền: <strong id="pd-tien" class="text-mono" style="color:var(--success)">—</strong>
+            </div>
+            <form method="post" asp-action="ProcessClaim">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="claimId" id="pd-id" value="@Model.ClaimID" />
+                <input type="hidden" name="action" value="Duyet" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-duyet')">Hủy</button>
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> Xác nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal từ chối -->
+    <div class="modal-overlay" id="modal-tuchoi">
+        <div class="modal" style="max-width:440px">
+            <div class="modal-title"><i class="fa-solid fa-circle-xmark" style="color:var(--danger)"></i> Nhập lý do từ chối</div>
+            <form method="post" asp-action="ProcessClaim" id="form-tc">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="claimId" value="@Model.ClaimID" />
+                <input type="hidden" name="action" value="TuChoi" />
+                <div class="form-group">
+                    <label>Lý do từ chối <span style="color:var(--danger)">*</span></label>
+                    <textarea name="lyDoTuChoi" id="tc-lydo" rows="3"
+                              placeholder="VD: Hồ sơ chưa đầy đủ, thiếu xác nhận bệnh viện..."
+                              style="resize:vertical"></textarea>
+                    <div class="text-danger" id="err-lydo" style="display:none">Vui lòng nhập lý do</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modal-tuchoi')">Hủy</button>
+                    <button type="button" class="btn btn-danger" onclick="submitTC()">
+                        <i class="fa-solid fa-xmark"></i> Xác nhận từ chối
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @section Scripts {
+    <script>
+        function moDuyet(id, hoTen, loai, tien) {
+            document.getElementById('pd-hoten').textContent = hoTen;
+            document.getElementById('pd-loai').textContent  = loai;
+            document.getElementById('pd-tien').textContent  = Number(tien).toLocaleString('vi-VN') + ' ₫';
+            openModal('modal-duyet');
+        }
+        function moTuChoi(id) { openModal('modal-tuchoi'); }
+        function submitTC() {
+            const v = document.getElementById('tc-lydo').value.trim();
+            if (!v) { document.getElementById('err-lydo').style.display='block'; return; }
+            document.getElementById('form-tc').submit();
+        }
+    </script>
+    }
+}

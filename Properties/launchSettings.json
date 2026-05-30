@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "InsuranceManagement": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:50189;http://localhost:50190"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+@model InsuranceManagement.Models.NhanVien
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Xóa nhân viên";
+    ViewData["ActiveMenu"] = "nhanvien";
+}
+<div class="page-header">
+    <h2>Xác nhận xóa nhân viên</h2>
+</div>
+<div class="card" style="max-width:520px">
+    <div class="card-body">
+        <div style="background:var(--danger-bg);border-radius:9px;padding:16px 18px;margin-bottom:20px;color:var(--danger)">
+            <strong><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo:</strong>
+            Thao tác này sẽ xóa vĩnh viễn nhân viên <strong>@Model.HoTen</strong> cùng toàn bộ lịch sử đóng tiền và đơn claim. Không thể hoàn tác.
+        </div>
+        <div class="info-grid" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+            <div class="info-card"><div class="info-card-label">Họ và tên</div><div class="info-card-value">@Model.HoTen</div></div>
+            <div class="info-card"><div class="info-card-label">Tài khoản</div><div class="info-card-value">@Model.TaiKhoan?.TenDangNhap</div></div>
+            <div class="info-card"><div class="info-card-label">Số sổ BHXH</div><div class="info-card-value text-mono">@(Model.SoSoBHXH ?? "—")</div></div>
+            <div class="info-card"><div class="info-card-label">Lương đóng BH</div><div class="info-card-value text-mono">@Model.LuongDongBaoHiem.ToString("N0") ₫</div></div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+            <a href="/Profile/Index" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Hủy</a>
+            <form method="post" asp-action="Delete" asp-route-id="@Model.NhanVienID">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i> Xác nhận xóa</button>
+            </form>
+        </div>
+    </div>
+</div>

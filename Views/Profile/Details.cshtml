@@ -1,0 +1,36 @@
+@model InsuranceManagement.Models.NhanVien
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Chi tiết nhân viên";
+    ViewData["ActiveMenu"] = "nhanvien";
+}
+<div class="page-header flex justify-between items-center">
+    <div>
+        <h2>@Model.HoTen</h2>
+        <p>NV@Model.NhanVienID.ToString("D4") &nbsp;·&nbsp; Tài khoản: @Model.TaiKhoan?.TenDangNhap</p>
+    </div>
+    <div style="display:flex;gap:8px">
+        <a href="/Profile/Edit/@Model.NhanVienID" class="btn btn-warning"><i class="fa-solid fa-pen"></i> Chỉnh sửa</a>
+        <a href="/Profile/Index" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Quay lại</a>
+    </div>
+</div>
+
+<div class="info-grid mb-4">
+    <div class="info-card"><div class="info-card-label">Họ và tên</div><div class="info-card-value">@Model.HoTen</div></div>
+    <div class="info-card"><div class="info-card-label">Số sổ BHXH</div><div class="info-card-value text-mono">@(Model.SoSoBHXH ?? "—")</div></div>
+    <div class="info-card"><div class="info-card-label">Số thẻ BHYT</div><div class="info-card-value text-mono">@(Model.SoTheBHYT ?? "—")</div></div>
+    <div class="info-card"><div class="info-card-label">Nơi KCB ban đầu</div><div class="info-card-value">@(Model.NoiDangKyKCB ?? "—")</div></div>
+    <div class="info-card"><div class="info-card-label">Lương đóng BH</div><div class="info-card-value text-mono">@Model.LuongDongBaoHiem.ToString("N0") ₫</div></div>
+    <div class="info-card"><div class="info-card-label">Tài khoản đăng nhập</div><div class="info-card-value">@Model.TaiKhoan?.TenDangNhap</div></div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3>Mức hưởng chính sách</h3></div>
+        <div class="card-body"><p style="white-space:pre-line;line-height:1.8">@(Model.MucHuongChinhSach ?? "Chưa có thông tin.")</p></div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3>Người thụ hưởng</h3></div>
+        <div class="card-body"><p style="white-space:pre-line;line-height:1.8">@(Model.NguoiThuHuong ?? "Chưa đăng ký.")</p></div>
+    </div>
+</div>

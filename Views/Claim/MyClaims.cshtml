@@ -1,0 +1,151 @@
+@model IEnumerable<InsuranceManagement.Models.YeuCauClaim>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Yêu cầu hưởng bảo hiểm";
+    ViewData["ActiveMenu"] = "claim";
+}
+
+<div class="page-header flex justify-between items-center">
+    <div>
+        <h2>Yêu cầu hưởng bảo hiểm</h2>
+        <p>Tạo và theo dõi các đơn yêu cầu giải quyết chế độ</p>
+    </div>
+    <a href="/Claim/CreateClaim" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> Tạo yêu cầu mới
+    </a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-file-lines"></i></div>
+        <div><div class="stat-value">@Model.Count()</div><div class="stat-label">Tổng đơn đã gửi</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hourglass-half"></i></div>
+        <div><div class="stat-value">@Model.Count(x => x.TrangThai == InsuranceManagement.Models.TrangThaiClaimValues.ChoDuyet)</div><div class="stat-label">Chờ duyệt</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+        <div><div class="stat-value">@Model.Count(x => x.TrangThai == InsuranceManagement.Models.TrangThaiClaimValues.DaDuyet)</div><div class="stat-label">Đã duyệt</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div><div class="stat-value">@Model.Count(x => x.TrangThai == InsuranceManagement.Models.TrangThaiClaimValues.TuChoi)</div><div class="stat-label">Bị từ chối</div></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-list-check" style="color:var(--primary)"></i> &nbsp;Danh sách đơn yêu cầu</h3>
+    </div>
+    <div class="table-wrapper">
+        @if (!Model.Any())
+        {
+            <div style="text-align:center;padding:56px 0;color:var(--gray-500)">
+                <i class="fa-solid fa-file-circle-plus" style="font-size:38px;margin-bottom:14px;display:block;opacity:.35"></i>
+                Bạn chưa có đơn yêu cầu nào.
+                <a href="/Claim/CreateClaim" style="color:var(--primary);font-weight:600"> Tạo ngay!</a>
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Loại chế độ</th>
+                        <th>Ngày gửi</th>
+                        <th style="text-align:right">Số tiền YC</th>
+                        <th>Mô tả</th>
+                        <th style="text-align:center">Chứng từ</th>
+                        <th style="text-align:center">Trạng thái</th>
+                        <th style="text-align:center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td class="text-mono" style="color:var(--gray-500)">#@c.ClaimID</td>
+                            <td style="font-weight:600">@c.LoaiCheDo</td>
+                            <td style="color:var(--gray-500);white-space:nowrap">@c.NgayYeuCau.ToString("dd/MM/yyyy")</td>
+                            <td style="text-align:right;font-weight:700" class="text-mono">@c.SoTienYeuCau.ToString("N0") ₫</td>
+                            <td style="max-width:220px">
+                                <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">@c.MoTaLyDo</div>
+                                @if (c.TrangThai == InsuranceManagement.Models.TrangThaiClaimValues.TuChoi && !string.IsNullOrEmpty(c.LyDoTuChoi))
+                                {
+                                    <div style="color:var(--danger);font-size:12px;margin-top:3px">
+                                        <i class="fa-solid fa-triangle-exclamation"></i> @c.LyDoTuChoi
+                                    </div>
+                                }
+                            </td>
+                            <td style="text-align:center">
+                                @if (!string.IsNullOrEmpty(c.ChungTuDinhKem))
+                                {
+                                    <a href="/Claim/ViewDocument/@c.ClaimID" target="_blank" class="btn btn-outline btn-sm" title="Xem chứng từ">
+                                        <i class="fa-solid fa-file-lines"></i>
+                                    </a>
+                                }
+                                else { <span style="color:var(--gray-400)">—</span> }
+                            </td>
+                            <td style="text-align:center">
+                                @switch (c.TrangThai)
+                                {
+                                    case InsuranceManagement.Models.TrangThaiClaimValues.ChoDuyet:
+                                        <span class="badge badge-yellow"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt</span>
+                                        break;
+                                    case InsuranceManagement.Models.TrangThaiClaimValues.DaDuyet:
+                                        <span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Đã duyệt</span>
+                                        break;
+                                    case InsuranceManagement.Models.TrangThaiClaimValues.TuChoi:
+                                        <span class="badge badge-red"><i class="fa-solid fa-circle-xmark"></i> Từ chối</span>
+                                        break;
+                                    case InsuranceManagement.Models.TrangThaiClaimValues.NhanVienHuy:
+                                        <span class="badge badge-gray"><i class="fa-solid fa-ban"></i> Đã hủy</span>
+                                        break;
+                                }
+                            </td>
+                            <td style="text-align:center">
+                                @if (c.TrangThai == InsuranceManagement.Models.TrangThaiClaimValues.ChoDuyet)
+                                {
+                                    <button class="btn btn-danger btn-sm" onclick="xacNhanHuy(@c.ClaimID)">
+                                        <i class="fa-solid fa-ban"></i> Hủy
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<!-- Modal xác nhận hủy -->
+<div class="modal-overlay" id="modal-huy">
+    <div class="modal" style="max-width:420px">
+        <div class="modal-title">
+            <i class="fa-solid fa-circle-question" style="color:var(--warning)"></i> Xác nhận hủy yêu cầu
+        </div>
+        <p style="color:var(--gray-700);font-size:14px;line-height:1.7">
+            Bạn có chắc muốn <strong>hủy yêu cầu</strong> này không?<br/>Thao tác này không thể khôi phục.
+        </p>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('modal-huy')">Quay lại</button>
+            <form method="post" asp-action="CancelClaim" id="form-huy">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="claimId" id="huy-id" />
+                <button type="submit" class="btn btn-danger"><i class="fa-solid fa-ban"></i> Đồng ý hủy</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function xacNhanHuy(id) {
+        document.getElementById('huy-id').value = id;
+        openModal('modal-huy');
+    }
+</script>
+}

@@ -1,0 +1,85 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng nhập";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>Đăng nhập – Hệ Thống Bảo Hiểm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Be Vietnam Pro',sans-serif;background:#0f172a;min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+        body::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(26,86,219,.25) 0%,transparent 70%);top:-150px;left:-150px;pointer-events:none}
+        body::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(14,165,233,.15) 0%,transparent 70%);bottom:-100px;right:-100px;pointer-events:none}
+        .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px}
+        .card{position:relative;z-index:10;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);backdrop-filter:blur(24px);border-radius:20px;padding:44px 40px;width:420px;box-shadow:0 25px 60px rgba(0,0,0,.5);animation:fadeUp .4s ease}
+        @@keyframe fadeUp{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+        .brand{text-align:center;margin-bottom:32px}
+        .brand-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1a56db,#0ea5e9);display:inline-flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin-bottom:14px;box-shadow:0 8px 24px rgba(26,86,219,.4)}
+        .brand h1{font-size:20px;font-weight:800;color:#fff}
+        .brand p{font-size:13px;color:rgba(255,255,255,.45);margin-top:4px}
+        .form-group{margin-bottom:18px}
+        label{display:block;font-size:13px;font-weight:600;color:rgba(255,255,255,.7);margin-bottom:7px}
+        .input-wrap{position:relative}
+        .input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.3);font-size:14px}
+        input[type=text],input[type=password]{width:100%;padding:11px 14px 11px 40px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:9px;color:#fff;font-family:'Be Vietnam Pro',sans-serif;font-size:14px;transition:border-color .15s,background .15s}
+        input::placeholder{color:rgba(255,255,255,.25)}
+        input:focus{outline:none;border-color:#1a56db;background:rgba(26,86,219,.12)}
+        .error-alert{background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);border-radius:9px;padding:11px 14px;color:#fca5a5;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:18px}
+        .btn-login{width:100%;padding:12px;background:linear-gradient(135deg,#1a56db,#0ea5e9);color:#fff;font-family:'Be Vietnam Pro',sans-serif;font-size:14.5px;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:opacity .15s,transform .1s;box-shadow:0 4px 18px rgba(26,86,219,.45);margin-top:6px}
+        .btn-login:hover{opacity:.92;transform:translateY(-1px)}
+        .demo-hint{margin-top:24px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px}
+        .demo-hint p{font-size:11.5px;color:rgba(255,255,255,.4);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+        .demo-row{display:flex;justify-content:space-between;font-size:12.5px;color:rgba(255,255,255,.6);padding:3px 0}
+        .demo-row span:last-child{font-family:monospace;color:rgba(255,255,255,.4)}
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="card">
+    <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h1>Hệ Thống Bảo Hiểm</h1>
+        <p>Quản lý bảo hiểm nhân viên nội bộ</p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="error-alert">
+            <i class="fa-solid fa-circle-exclamation"></i> @TempData["Error"]
+        </div>
+    }
+
+    <form method="post" asp-controller="Account" asp-action="Login">
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <label>Tên đăng nhập</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" name="tenDangNhap" placeholder="Nhập tên đăng nhập..." required autocomplete="username"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" name="matKhau" placeholder="Nhập mật khẩu..." required autocomplete="current-password"/>
+            </div>
+        </div>
+        <button type="submit" class="btn-login">
+            <i class="fa-solid fa-right-to-bracket"></i> &nbsp;Đăng nhập
+        </button>
+    </form>
+
+    <div class="demo-hint">
+        <p>Tài khoản demo</p>
+        <div class="demo-row"><span>👑 admin</span><span>Admin@123</span></div>
+        <div class="demo-row"><span>👤 nhanvien1</span><span>Nv@12345</span></div>
+        <div class="demo-row"><span>👤 nhanvien2</span><span>Nv@12345</span></div>
+    </div>
+</div>
+</body>
+</html>

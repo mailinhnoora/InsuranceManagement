@@ -1,0 +1,122 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Tổng quan hệ thống";
+    ViewData["ActiveMenu"] = "dashboard";
+    var tongNV       = (int)(ViewData["TongNhanVien"] ?? 0);
+    var tongClaim    = (int)(ViewData["TongClaim"]    ?? 0);
+    var choDuyet     = (int)(ViewData["ChoDuyet"]     ?? 0);
+    var daDuyet      = (int)(ViewData["DaDuyet"]      ?? 0);
+    var tuChoi       = (int)(ViewData["TuChoi"]       ?? 0);
+    var chuaThanhToan= (int)(ViewData["ChuaThanhToan"]?? 0);
+    var thangGanNhat = ViewData["ThangGanNhat"]?.ToString() ?? "Chưa có";
+    var claimMoi     = ViewData["ClaimChoPheDuyet"] as List<InsuranceManagement.Models.YeuCauClaim> ?? new();
+}
+
+<div class="page-header">
+    <h2>Tổng quan hệ thống</h2>
+    <p>Chào mừng Admin! Đây là tóm tắt toàn bộ hoạt động bảo hiểm.</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+        <div><div class="stat-value">@tongNV</div><div class="stat-label">Tổng nhân viên</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hourglass-half"></i></div>
+        <div><div class="stat-value">@choDuyet</div><div class="stat-label">Claim chờ duyệt</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+        <div><div class="stat-value">@daDuyet</div><div class="stat-label">Claim đã duyệt</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div><div class="stat-value">@chuaThanhToan</div><div class="stat-label">Kỳ chưa thanh toán</div></div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Quick actions -->
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-bolt" style="color:var(--warning)"></i> &nbsp;Thao tác nhanh</h3></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+            <a href="/Profile/Index" class="btn btn-outline" style="justify-content:flex-start">
+                <i class="fa-solid fa-users" style="color:var(--primary)"></i> Quản lý hồ sơ nhân viên
+            </a>
+            <a href="/Insurance/Calculate" class="btn btn-outline" style="justify-content:flex-start">
+                <i class="fa-solid fa-calculator" style="color:var(--success)"></i> Tính toán bảo hiểm tháng mới
+            </a>
+            <a href="/Insurance/AdminHistory" class="btn btn-outline" style="justify-content:flex-start">
+                <i class="fa-solid fa-table" style="color:var(--primary)"></i> Xem lịch sử đóng bảo hiểm
+            </a>
+            <a href="/Claim/AdminClaims?trangThai=ChoDuyet" class="btn btn-outline" style="justify-content:flex-start">
+                <i class="fa-solid fa-clipboard-check" style="color:var(--warning)"></i> Xét duyệt Claim
+                @if (choDuyet > 0)
+                {
+                    <span style="margin-left:auto;background:var(--warning-bg);color:var(--warning);font-size:11px;padding:1px 8px;border-radius:10px;font-weight:700">@choDuyet mới</span>
+                }
+            </a>
+        </div>
+    </div>
+
+    <!-- Tháng gần nhất + tổng kết -->
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-chart-bar" style="color:var(--primary)"></i> &nbsp;Tóm tắt Claim</h3></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+                <span style="color:var(--gray-500);font-size:13px">Tháng đã tính gần nhất</span>
+                <span class="badge badge-blue text-mono">@thangGanNhat</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+                <span style="color:var(--gray-500);font-size:13px">Tổng đơn Claim</span>
+                <span style="font-weight:700;font-family:var(--mono)">@tongClaim đơn</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100)">
+                <span style="color:var(--gray-500);font-size:13px">Đã phê duyệt</span>
+                <span class="badge badge-green">@daDuyet đơn</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
+                <span style="color:var(--gray-500);font-size:13px">Đã từ chối</span>
+                <span class="badge badge-red">@tuChoi đơn</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (claimMoi.Any())
+{
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-bell" style="color:var(--warning)"></i> &nbsp;Claim đang chờ phê duyệt</h3>
+            <a href="/Claim/AdminClaims?trangThai=ChoDuyet" class="btn btn-sm btn-outline">Xem tất cả</a>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th><th>Nhân viên</th><th>Loại chế độ</th>
+                        <th style="text-align:right">Số tiền</th><th>Ngày gửi</th><th style="text-align:center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in claimMoi)
+                    {
+                        <tr>
+                            <td class="text-mono" style="color:var(--gray-500)">#@c.ClaimID</td>
+                            <td style="font-weight:600">@c.NhanVien?.HoTen</td>
+                            <td><span class="badge badge-blue">@c.LoaiCheDo</span></td>
+                            <td style="text-align:right" class="text-mono">@c.SoTienYeuCau.ToString("N0") ₫</td>
+                            <td style="color:var(--gray-500)">@c.NgayYeuCau.ToString("dd/MM/yyyy")</td>
+                            <td style="text-align:center">
+                                <a href="/Claim/ClaimDetails/@c.ClaimID" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-eye"></i> Xem
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

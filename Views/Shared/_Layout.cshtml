@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – Hệ Thống Bảo Hiểm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary:#1a56db; --primary-dark:#1040b0; --primary-light:#e8f0fd;
+            --success:#16a34a; --success-bg:#dcfce7;
+            --warning:#d97706; --warning-bg:#fef3c7;
+            --danger:#dc2626;  --danger-bg:#fee2e2;
+            --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb;
+            --gray-300:#d1d5db; --gray-500:#6b7280; --gray-700:#374151; --gray-900:#111827;
+            --sidebar-w:260px; --header-h:64px;
+            --radius:10px;
+            --shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+            --shadow-md:0 4px 12px rgba(0,0,0,.10);
+            --shadow-lg:0 10px 30px rgba(0,0,0,.12);
+            --font:'Be Vietnam Pro',sans-serif;
+            --mono:'JetBrains Mono',monospace;
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:var(--font);background:var(--gray-50);color:var(--gray-900);font-size:14px;line-height:1.6}
+        a{color:inherit;text-decoration:none}
+
+        /* SIDEBAR */
+        .sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:#0f172a;display:flex;flex-direction:column;z-index:100}
+        .sidebar-brand{padding:20px 22px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+        .sidebar-brand .logo-icon{width:38px;height:38px;background:var(--primary);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;margin-bottom:10px}
+        .sidebar-brand h1{font-size:13px;font-weight:700;color:#fff;line-height:1.3}
+        .sidebar-brand p{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+        .sidebar-nav{flex:1;padding:14px 12px;overflow-y:auto}
+        .nav-section-label{font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.3);text-transform:uppercase;padding:8px 10px 6px}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;color:rgba(255,255,255,.65);font-size:13.5px;font-weight:500;transition:background .15s,color .15s;margin-bottom:2px}
+        .nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+        .nav-item.active{background:var(--primary);color:#fff}
+        .nav-item i{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+        .sidebar-footer{padding:16px 14px;border-top:1px solid rgba(255,255,255,.08)}
+        .user-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.05)}
+        .user-avatar{width:34px;height:34px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;flex-shrink:0}
+        .user-info{flex:1;min-width:0}
+        .user-name{font-size:12.5px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .user-role{font-size:11px;color:rgba(255,255,255,.45)}
+        .logout-form{margin:0}
+        .logout-btn{background:none;border:none;color:rgba(255,255,255,.4);font-size:15px;cursor:pointer;padding:4px;transition:color .15s}
+        .logout-btn:hover{color:#f87171}
+
+        /* HEADER */
+        .header{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--header-h);background:#fff;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:90;box-shadow:var(--shadow-sm)}
+        .header-title{font-size:16px;font-weight:700}
+        .header-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+        .badge-admin{background:var(--primary-light);color:var(--primary)}
+        .badge-nhanvien{background:var(--success-bg);color:var(--success)}
+
+        /* MAIN */
+        .main-content{margin-left:var(--sidebar-w);padding:calc(var(--header-h) + 28px) 28px 40px;min-height:100vh}
+
+        /* CARDS */
+        .card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);box-shadow:var(--shadow-sm);overflow:hidden}
+        .card-header{padding:18px 22px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+        .card-header h3{font-size:15px;font-weight:700}
+        .card-body{padding:22px}
+
+        /* TABLES */
+        .table-wrapper{overflow-x:auto}
+        table{width:100%;border-collapse:collapse}
+        thead tr{background:var(--gray-50)}
+        th{text-align:left;padding:11px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-500);border-bottom:2px solid var(--gray-200)}
+        td{padding:13px 16px;border-bottom:1px solid var(--gray-100);font-size:13.5px;color:var(--gray-700)}
+        tbody tr:hover{background:var(--gray-50)}
+        tbody tr:last-child td{border-bottom:none}
+
+        /* BADGES */
+        .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+        .badge-green{background:var(--success-bg);color:var(--success)}
+        .badge-yellow{background:var(--warning-bg);color:var(--warning)}
+        .badge-red{background:var(--danger-bg);color:var(--danger)}
+        .badge-blue{background:var(--primary-light);color:var(--primary)}
+        .badge-gray{background:var(--gray-100);color:var(--gray-500)}
+
+        /* BUTTONS */
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+        .btn-primary{background:var(--primary);color:#fff}
+        .btn-primary:hover{background:var(--primary-dark)}
+        .btn-success{background:var(--success);color:#fff}
+        .btn-success:hover{background:#15803d}
+        .btn-danger{background:var(--danger);color:#fff}
+        .btn-danger:hover{background:#b91c1c}
+        .btn-warning{background:var(--warning);color:#fff}
+        .btn-warning:hover{background:#b45309}
+        .btn-outline{background:transparent;color:var(--gray-700);border:1.5px solid var(--gray-300)}
+        .btn-outline:hover{background:var(--gray-50)}
+        .btn-sm{padding:5px 12px;font-size:12px}
+
+        /* FORMS */
+        .form-group{margin-bottom:18px}
+        label{display:block;font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:6px}
+        input[type=text],input[type=password],input[type=number],input[type=email],select,textarea{width:100%;padding:9px 13px;border-radius:7px;border:1.5px solid var(--gray-300);font-family:var(--font);font-size:13.5px;color:var(--gray-900);transition:border-color .15s,box-shadow .15s;background:#fff}
+        input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,86,219,.12)}
+        .text-danger{color:var(--danger);font-size:12px;display:block;margin-top:4px}
+
+        /* MODALS */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);z-index:200;display:none;align-items:center;justify-content:center}
+        .modal-overlay.open{display:flex}
+        .modal{background:#fff;border-radius:14px;box-shadow:var(--shadow-lg);padding:28px;min-width:420px;max-width:520px;width:90%;animation:slideIn .2s ease}
+        @@keyframe slideIn{from{transform:translateY(-14px);opacity:0}to{transform:translateY(0);opacity:1}}
+        .modal-title{font-size:17px;font-weight:700;margin-bottom:16px}
+        .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+
+        /* TOAST */
+        #toast-container{position:fixed;top:20px;right:24px;z-index:999;display:flex;flex-direction:column;gap:10px}
+        .toast{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:13px 18px;box-shadow:0 6px 24px rgba(0,0,0,.15);border-left:4px solid var(--success);font-size:13.5px;font-weight:500;animation:toastIn .25s ease;min-width:280px}
+        .toast.error{border-left-color:var(--danger)}
+        .toast.warning{border-left-color:var(--warning)}
+        @@keyframe toastIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+        /* STATS */
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;margin-bottom:24px}
+        .stat-card{background:#fff;border-radius:var(--radius);padding:18px 20px;border:1px solid var(--gray-200);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px}
+        .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+        .stat-icon.blue{background:var(--primary-light);color:var(--primary)}
+        .stat-icon.green{background:var(--success-bg);color:var(--success)}
+        .stat-icon.yellow{background:var(--warning-bg);color:var(--warning)}
+        .stat-icon.red{background:var(--danger-bg);color:var(--danger)}
+        .stat-value{font-size:22px;font-weight:800;font-family:var(--mono)}
+        .stat-label{font-size:12px;color:var(--gray-500);margin-top:1px}
+
+        /* INFO CARDS */
+        .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+        .info-card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:20px;box-shadow:var(--shadow-sm)}
+        .info-card-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-500);margin-bottom:6px}
+        .info-card-value{font-size:15px;font-weight:600;color:var(--gray-900)}
+        .info-card-icon{float:right;font-size:22px;color:var(--gray-200);margin-top:-4px}
+
+        /* UTILS */
+        .page-header{margin-bottom:22px}
+        .page-header h2{font-size:22px;font-weight:800}
+        .page-header p{color:var(--gray-500);font-size:13.5px;margin-top:3px}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}
+        .gap-2{gap:8px}.gap-3{gap:12px}.mt-4{margin-top:16px}.mb-4{margin-bottom:16px}
+        .text-muted{color:var(--gray-500);font-size:13px}
+        .text-mono{font-family:var(--mono)}
+        .text-red{color:var(--danger);font-size:12.5px}
+        .alert-success{background:var(--success-bg);border:1px solid #86efac;border-radius:10px;padding:14px 18px;color:var(--success);font-weight:600;display:flex;align-items:center;gap:10px}
+        .alert-error{background:var(--danger-bg);border:1px solid #fca5a5;border-radius:10px;padding:14px 18px;color:var(--danger);font-weight:600;display:flex;align-items:center;gap:10px}
+    </style>
+</head>
+<body>
+<div id="toast-container"></div>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    var isAdmin = User.IsInRole("Admin");
+    var userName = User.Identity.Name ?? "User";
+    var initial = userName.Length > 0 ? userName[0].ToString().ToUpper() : "U";
+    var activeMenu = ViewData["ActiveMenu"]?.ToString() ?? "";
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h1>Hệ Thống Bảo Hiểm<br>Nhân Viên</h1>
+            <p>Insurance Management System</p>
+        </div>
+        <nav class="sidebar-nav">
+            @if (isAdmin)
+            {
+                <div class="nav-section-label">Quản trị</div>
+                <a href="/AdminDashboard/Index" class="nav-item @(activeMenu=="dashboard"?"active":"")">
+                    <i class="fa-solid fa-chart-pie"></i> Tổng quan
+                </a>
+                <a href="/Profile/Index" class="nav-item @(activeMenu=="nhanvien"?"active":"")">
+                    <i class="fa-solid fa-users"></i> Quản lý hồ sơ NV
+                </a>
+                <a href="/Insurance/Calculate" class="nav-item @(activeMenu=="tinhtoan"?"active":"")">
+                    <i class="fa-solid fa-calculator"></i> Tính toán bảo hiểm
+                </a>
+                <a href="/Insurance/AdminHistory" class="nav-item @(activeMenu=="lichsunop"?"active":"")">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đóng (toàn bộ)
+                </a>
+                <a href="/Claim/AdminClaims" class="nav-item @(activeMenu=="pheduyet"?"active":"")">
+                    <i class="fa-solid fa-clipboard-check"></i> Phê duyệt Claim
+                </a>
+            }
+            else
+            {
+                <div class="nav-section-label">Nhân viên</div>
+                <a href="/Profile/MyProfile" class="nav-item @(activeMenu=="thongtin"?"active":"")">
+                    <i class="fa-solid fa-id-card"></i> Thông tin cá nhân
+                </a>
+                <a href="/Insurance/MyHistory" class="nav-item @(activeMenu=="lichsu"?"active":"")">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đóng tiền
+                </a>
+                <a href="/Claim/MyClaims" class="nav-item @(activeMenu=="claim"?"active":"")">
+                    <i class="fa-solid fa-file-medical"></i> Yêu cầu bảo hiểm
+                </a>
+            }
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar">@initial</div>
+                <div class="user-info">
+                    <div class="user-name">@userName</div>
+                    <div class="user-role">@(isAdmin ? "Quản trị viên" : "Nhân viên")</div>
+                </div>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="logout-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="logout-btn" title="Đăng xuất">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <header class="header">
+        <div class="header-title">@ViewData["Title"]</div>
+        <div>
+            @if (isAdmin)
+            {
+                <span class="header-badge badge-admin"><i class="fa-solid fa-shield-halved"></i> Admin</span>
+            }
+            else
+            {
+                <span class="header-badge badge-nhanvien"><i class="fa-solid fa-user"></i> Nhân viên</span>
+            }
+        </div>
+    </header>
+
+    <main class="main-content">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert-success mb-4">
+                <i class="fa-solid fa-circle-check"></i> @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert-error mb-4">
+                <i class="fa-solid fa-circle-exclamation"></i> @TempData["Error"]
+            </div>
+        }
+        @RenderBody()
+    </main>
+}
+else
+{
+    @RenderBody()
+}
+
+<script>
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    document.querySelectorAll('.nav-item').forEach(el => {
+        if (el.getAttribute('href') && window.location.pathname.startsWith(el.getAttribute('href')))
+            el.classList.add('active');
+    });
+</script>
+@RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,103 @@
+@model IEnumerable<InsuranceManagement.Models.KyDongBaoHiem>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Lịch sử đóng tiền";
+    ViewData["ActiveMenu"] = "lichsu";
+    var namChon  = ViewData["NamChon"]?.ToString() ?? "";
+    var cacNam   = ViewData["CacNam"] as List<string> ?? new();
+    var nhanVien = ViewData["NhanVien"] as InsuranceManagement.Models.NhanVien;
+    var tongNV   = Model.Sum(x => x.TongTienNhanVien);
+    var tongCT   = Model.Sum(x => x.TongTienCongTy);
+    var soDaDong = Model.Count(x => x.TrangThaiThanhToan == InsuranceManagement.Models.TrangThaiThanhToanValues.DaThanhToan);
+}
+
+<div class="page-header flex justify-between items-center">
+    <div>
+        <h2>Lịch sử đóng tiền bảo hiểm</h2>
+        <p>Bảng trích đóng bảo hiểm hàng tháng</p>
+    </div>
+    <form method="get" asp-action="MyHistory" style="display:flex;gap:10px;align-items:center">
+        <select name="nam" onchange="this.form.submit()" style="width:auto;padding:8px 12px;border-radius:7px;border:1.5px solid var(--gray-300);font-family:var(--font);font-size:13px">
+            <option value="">-- Tất cả các năm --</option>
+            @foreach (var y in cacNam)
+            {
+                <option value="@y" selected="@(y == namChon)">Năm @y</option>
+            }
+        </select>
+    </form>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-calendar-check"></i></div>
+        <div><div class="stat-value">@Model.Count()</div><div class="stat-label">Kỳ đóng</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-arrow-down"></i></div>
+        <div><div class="stat-value" style="font-size:17px">@tongNV.ToString("N0")</div><div class="stat-label">Tổng NV đóng (VNĐ)</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-building"></i></div>
+        <div><div class="stat-value" style="font-size:17px">@tongCT.ToString("N0")</div><div class="stat-label">Tổng công ty đóng (VNĐ)</div></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-circle-check"></i></div>
+        <div><div class="stat-value">@soDaDong / @Model.Count()</div><div class="stat-label">Kỳ đã thanh toán</div></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-table" style="color:var(--primary)"></i> &nbsp;Chi tiết từng tháng</h3>
+    </div>
+    <div class="table-wrapper">
+        @if (!Model.Any())
+        {
+            <div style="text-align:center;padding:48px 0;color:var(--gray-500)">
+                <i class="fa-solid fa-inbox" style="font-size:36px;margin-bottom:12px;display:block;opacity:.4"></i>
+                Chưa có dữ liệu đóng tiền
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tháng/Năm</th>
+                        <th style="text-align:right">Lương gốc</th>
+                        <th style="text-align:right">BHXH (8%)</th>
+                        <th style="text-align:right">BHYT (1.5%)</th>
+                        <th style="text-align:right">BHTN (1%)</th>
+                        <th style="text-align:right">NV đóng</th>
+                        <th style="text-align:right">Công ty đóng</th>
+                        <th style="text-align:center">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var k in Model)
+                    {
+                        <tr>
+                            <td class="text-mono" style="font-weight:600">@k.ThangNam</td>
+                            <td style="text-align:right" class="text-mono">@k.LuongGoc.ToString("N0")</td>
+                            <td style="text-align:right" class="text-mono">@k.TienBHXH_NV.ToString("N0")</td>
+                            <td style="text-align:right" class="text-mono">@k.TienBHYT_NV.ToString("N0")</td>
+                            <td style="text-align:right" class="text-mono">@k.TienBHTN_NV.ToString("N0")</td>
+                            <td style="text-align:right;font-weight:700;color:var(--danger)" class="text-mono">@k.TongTienNhanVien.ToString("N0")</td>
+                            <td style="text-align:right;font-weight:700;color:var(--success)" class="text-mono">@k.TongTienCongTy.ToString("N0")</td>
+                            <td style="text-align:center">
+                                @if (k.TrangThaiThanhToan == InsuranceManagement.Models.TrangThaiThanhToanValues.DaThanhToan)
+                                {
+                                    <span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Đã đóng</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-yellow"><i class="fa-solid fa-clock"></i> Chưa nộp</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
