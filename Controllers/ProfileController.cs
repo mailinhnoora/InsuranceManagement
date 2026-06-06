@@ -126,7 +126,7 @@ namespace InsuranceManagement.Controllers
                 // Production: MatKhau = _passwordHasher.HashPassword(null, matKhau)
                 MatKhau  = matKhau,
                 VaiTro   = "NhanVien",
-                NgayTao  = DateTime.Now
+                NgayTao  = DateTime.UtcNow
             };
 
             _context.TaiKhoans.Add(taiKhoan);

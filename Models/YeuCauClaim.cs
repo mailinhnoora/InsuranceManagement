@@ -25,7 +25,7 @@ namespace InsuranceManagement.Models
 
         [Required]
         [Display(Name = "Ngày yêu cầu")]
-        public DateTime NgayYeuCau { get; set; } = DateTime.Now;
+        public DateTime NgayYeuCau { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// QUAN TRỌNG: Dùng decimal, KHÔNG dùng float/double.

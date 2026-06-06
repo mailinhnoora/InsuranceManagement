@@ -30,7 +30,7 @@ namespace InsuranceManagement.Models
         public string VaiTro { get; set; } = "NhanVien";
 
         [Display(Name = "Ngày tạo")]
-        public DateTime NgayTao { get; set; } = DateTime.Now;
+        public DateTime NgayTao { get; set; } = DateTime.UtcNow;
 
         // Navigation property
         public virtual NhanVien? NhanVien { get; set; }

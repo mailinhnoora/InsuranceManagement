@@ -155,7 +155,7 @@ namespace InsuranceManagement.Controllers
             {
                 NhanVienID     = nhanVien.NhanVienID,
                 LoaiCheDo      = loaiCheDo,
-                NgayYeuCau     = DateTime.Now,
+                NgayYeuCau     = DateTime.UtcNow,
                 SoTienYeuCau   = soTienYeuCau,
                 MoTaLyDo       = moTaLyDo.Trim(),
                 ChungTuDinhKem = chungTuPath,
@@ -272,7 +272,7 @@ namespace InsuranceManagement.Controllers
             if (action == "Duyet")
             {
                 claim.TrangThai = TrangThaiClaimValues.DaDuyet;
-                claim.NgayXuly  = DateTime.Now;
+                claim.NgayXuly  = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"Đã phê duyệt yêu cầu #{claimId} thành công!";
@@ -287,7 +287,7 @@ namespace InsuranceManagement.Controllers
 
                 claim.TrangThai  = TrangThaiClaimValues.TuChoi;
                 claim.LyDoTuChoi = lyDoTuChoi.Trim();
-                claim.NgayXuly   = DateTime.Now;
+                claim.NgayXuly   = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
                 TempData["Success"] = $"Đã từ chối yêu cầu #{claimId}.";
