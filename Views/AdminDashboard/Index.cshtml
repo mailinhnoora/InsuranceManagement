@@ -1,6 +1,6 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Tổng quan hệ thống";
+    ViewData["Title"] = "Trang chủ hệ thống";
     ViewData["ActiveMenu"] = "dashboard";
     var tongNV       = (int)(ViewData["TongNhanVien"] ?? 0);
     var tongClaim    = (int)(ViewData["TongClaim"]    ?? 0);
@@ -13,8 +13,26 @@
 }
 
 <div class="page-header">
-    <h2>Tổng quan hệ thống</h2>
+    <h2>Trang chủ hệ thống</h2>
     <p>Chào mừng Admin! Đây là tóm tắt toàn bộ hoạt động bảo hiểm.</p>
+    <table style="border-collapse: collapse; margin-top: 10px;">
+        <tr>
+            <th style="border: 1px solid #ccc; padding: 8px 16px;">Thành viên</th>
+            <th style="border: 1px solid #ccc; padding: 8px 16px;">Chức vụ</th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ccc; padding: 8px 16px;">Nguyễn Mai Linh</td>
+            <td style="border: 1px solid #ccc; padding: 8px 16px;">Cơ sở dữ liệu và mô hình hóa (MODEL)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ccc; padding: 8px 16px;">Nguyễn Việt Hoàng</td>
+            <td style="border: 1px solid #ccc; padding: 8px 16px;">Xử lý logic Back-end (CONTROLLER)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ccc; padding: 8px 16px;">Trần Thị Cẩm Ly</td>
+            <td style="border: 1px solid #ccc; padding: 8px 16px;">Giao diện Front-end (VIEW)</td>
+        </tr>
+    </table>
 </div>
 
 <div class="stats-grid">
