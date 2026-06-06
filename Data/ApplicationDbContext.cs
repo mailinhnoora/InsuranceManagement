@@ -27,7 +27,7 @@ namespace InsuranceManagement.Data
                       .HasDefaultValue("NhanVien");
 
                 entity.Property(t => t.NgayTao)
-                      .HasDefaultValueSql("GETDATE()");
+                      .HasDefaultValueSql("NOW()");
             });
 
             // ─── NhanVien ────────────────────────────────────────────────────
