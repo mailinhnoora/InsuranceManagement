@@ -1,6 +1,6 @@
 using InsuranceManagement.Models;
 using Microsoft.EntityFrameworkCore;
-
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 namespace InsuranceManagement.Data
 {
     public class ApplicationDbContext : DbContext
