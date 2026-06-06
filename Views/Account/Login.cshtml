@@ -66,7 +66,8 @@
             <label>Mật khẩu</label>
             <div class="input-wrap">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" name="matKhau" placeholder="Nhập mật khẩu..." required autocomplete="current-password"/>
+                    <input type="password" name="matKhau" id="matKhau" placeholder="Nhập mật khẩu..." required autocomplete="current-password" />
+                    <i class="fa-solid fa-eye" id="togglePass" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.3);cursor:pointer;left:auto"></i>
             </div>
         </div>
         <button type="submit" class="btn-login">
@@ -76,10 +77,22 @@
 
     <div class="demo-hint">
         <p>Tài khoản demo</p>
-        <div class="demo-row"><span>👑 admin</span><span>Admin@123</span></div>
-        <div class="demo-row"><span>👤 nhanvien1</span><span>Nv@12345</span></div>
-        <div class="demo-row"><span>👤 nhanvien2</span><span>Nv@12345</span></div>
+        <div class="demo-row"><span> admin</span><span>Admin@123</span></div>
+        <div class="demo-row"><span> nv001</span><span>Nv@123</span></div>
+        <div class="demo-row"><span> nv002</span><span>Nv@123</span></div>
     </div>
 </div>
+    <script>
+        document.getElementById('togglePass').addEventListener('click', function() {
+            var input = document.getElementById('matKhau');
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                this.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    </script>
 </body>
 </html>
