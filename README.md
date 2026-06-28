@@ -1,10 +1,10 @@
-# 🛡️ Hệ Thống Quản Lý Bảo Hiểm Nhân Viên
+ Hệ Thống Quản Lý Bảo Hiểm Nhân Viên
 
 ASP.NET Core 8 MVC — Insurance Management System
 
 ---
 
-## 📁 Cấu trúc project
+Cấu trúc project
 
 ```
 InsuranceManagement/
@@ -36,34 +36,9 @@ InsuranceManagement/
 
 ---
 
-## ⚙️ Cài đặt & Chạy
 
-### 1. Yêu cầu
-- .NET 8 SDK
-- SQL Server (LocalDB hoặc SQL Server Express)
 
-### 2. Cấu hình Connection String
-Mở `appsettings.json`, sửa connection string:
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=InsuranceManagementDB;Trusted_Connection=True;"
-}
-```
-Nếu dùng SQL Server Express:
-```
-Server=.\\SQLEXPRESS;Database=InsuranceManagementDB;Trusted_Connection=True;
-```
-
-### 3. Chạy project
-```bash
-cd InsuranceManagement
-dotnet run
-```
-Database sẽ tự động được tạo và seed dữ liệu mẫu khi chạy lần đầu.
-
----
-
-## 🔑 Tài khoản demo
+## Tài khoản demo
 
 | Vai trò     | Tên đăng nhập | Mật khẩu  |
 |-------------|---------------|-----------|
